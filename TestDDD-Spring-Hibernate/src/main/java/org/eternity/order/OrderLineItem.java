@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable(value="orderLineItem",preConstruction=true)
 public class OrderLineItem {
+	private long id;
 	private Product product;
 	private int quantity;
 	
@@ -44,8 +45,12 @@ public class OrderLineItem {
 	
 	int getQuantity() {
 	    return quantity;
-	  }
-	 
+	}
+	
+	public long getId() {
+		return id;
+	}
+
 	public boolean equals(Object object) {
 	    if (object == this) {
 	      return true;

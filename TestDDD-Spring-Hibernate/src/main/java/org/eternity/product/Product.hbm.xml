@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+ 
 <!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
  
-<hibernate-mapping package="org.eternity.order" default-access="field">
-  <class name="HybernateOrder" table="ORDERS">
-    <id name="id" column="ID" type="long">
-      <generator class="native"/>
-    </id>           
-    <property name="orderId" column="ORDER_ID" type="string" length="10"/>
-    <many-to-one name="customer" class="org.eternity.customer.HybernateCustomer"
-      column="CUSTOMER_ID" not-null="true"/>
-    <set name="lineItems" table="ORDER_LINE_ITEMS"
-      cascade="all, delete-orphan">
-      <key column="ORDER_ID"/>
-      <one-to-many class="OrderLineItem"/>
-    </set>          
-  </class>
- 
-  <class name="OrderLineItem" table="ORDER_LINE_ITEMS">
-    <id name="id" column="ID" type="long">
-      <generator class="native"/>
-    </id>           
-    <property name="quantity" column="QUANTITY" type="int"/>
-    <many-to-one name="product" class="Product"
-      column="PRODUCT_ID" not-null="true"/>        
-  </class>
+<hibernate-mapping package="org.eternity.product" default-access="field">
+<class name="HybernateProduct" table="PRODUCTS">
+<id name="id" column="ID" type="long">
+<generator class="native"/>
+</id>
+<property name="name" column="NAME" type="string"
+length="10" not-null="true"/>
+<component name="price" class="org.eternity.customer.Money">
+<property name="amount" column="PRICE" type="big_decimal"/>
+</component>
+</class>
 </hibernate-mapping>
