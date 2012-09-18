@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+   	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    	<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+    	<property name="url" value="jdbc:hsqldb:hsql://localhost" />
+    	<property name="username" value="sa" />
+    	<property name="password" value="" />
+  	</bean>
+  	
+   	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+		      	<list>
+					<value>org/eternity/customer/Customer.hbm.xml</value>
+					<value>org/eternity/product/Product.hbm.xml</value>
+					<value>org/eternity/order/Order.hbm.xml</value>
+				</list>
+		</property>
+		<property name="hibernateProperties">
+		      <props>
+		        <prop key="hibernate.connection.useUnicode">true</prop>
+            	<prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+            	<prop key="hibernate.connection.charSet">UTF-8</prop>
+		        <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+		        <prop key="hibernate.show_sql">true</prop>
+		        <prop key="hibernate.format_sql">true</prop>
+		        <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+		        <!-- Enable Hibernate's automatic session context management 
+            	<prop key="current_session_context_class">thread</prop> -->
+
+            	<!-- Disable the second-level cache  -->
+            	<prop key="cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+		        
+		      </props>
+		 </property>
+ 	</bean>
+ 	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    	<property name="sessionFactory" ref="sessionFactory"/>
+  	</bean>
+  
+	<!-- JSR-303 support will be detected on classpath and enabled automatically -->
+    <mvc:annotation-driven/>
+    <context:component-scan base-package="spring" />
+	<context:property-placeholder location="classpath*:spring/config/beans.properties"/>
+	<context:load-time-weaver/>
+	<context:spring-configured/>
+	<bean id="orderLineItem" class="org.eternity.order.OrderLineItem" abstract="true">
+    	<property name="productRepositoryBeanFactory" ref="productRepositoryBeanFactory"/>
+	</bean>	
+	
+	<bean id="registrar" class="org.eternity.common.EntryPointRegistrar"/>
+	
+	<!-- 
+	<bean id="productRepository" class="org.eternity.product.CollectionProductRepository">
+	   <constructor-arg ref="registrar" />
+  	</bean>
+  	
+	
+	<bean id="customerRepository" class="org.eternity.customer.CollectionCustomerRepository">
+      <property name="registrar" ref="registrar"/>
+  	</bean>
+  	
+	<bean id="orderRepository" class="org.eternity.order.CollectionOrderRepository">
+      <property name="registrar" ref="registrar"/>
+  	</bean>
+  	
+	 -->
+
+	
+	<bean id="customerBeanFactory" class="org.eternity.customer.CustomerBeanFactory">
+    	<property name="repoType" value="${repository.type}"/>
+  	</bean>
+  	
+	<bean id="orderBeanFactory" class="org.eternity.order.OrderBeanFactory">
+    	<property name="repoType" value="${repository.type}"/>
+  	</bean>
+  	
+	<bean id="productBeanFactory" class="org.eternity.product.ProductBeanFactory">
+    	<property name="repoType" value="${repository.type}"/>
+  	</bean>
+	
+	
+	<bean id="customerRepositoryBeanFactory" class="org.eternity.customer.CustomerRepositoryBeanFactory">
+	    <property name="registrar" ref="registrar"/>
+    	<property name="repoType" value="${repository.type}"/>
+    	<property name="sessionFactory" ref="sessionFactory"/>
+  	</bean>
+  	
+	<bean id="orderRepositoryBeanFactory" class="org.eternity.order.OrderRepositoryBeanFactory">
+	    <property name="registrar" ref="registrar"/>
+    	<property name="repoType" value="${repository.type}"/>
+    	<property name="sessionFactory" ref="sessionFactory"/>
+  	</bean>
+  	
+	<bean id="productRepositoryBeanFactory" class="org.eternity.product.ProductRepositoryBeanFactory">
+	    <property name="registrar" ref="registrar"/>
+    	<property name="repoType" value="${repository.type}"/>
+    	<property name="sessionFactory" ref="sessionFactory"/>
+  	</bean>
+  	
+	
+	
+
+
+
+	
+	<bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+	    <property name="velocityProperties">
+	        <util:properties location="${velocity.properties}"/>
+	    </property>
+	    <property name="resourceLoaderPath" value="${velocity.resourceLoaderPath}"/>
+	    <property name="overrideLogging" value="${velocity.overrideLogging}"/>
+	</bean>
+	
+	<bean id="viewResolver" class="spring.viewResolver.EternityVelocityViewResolver">
+	    <property name="cache" value="true"/>
+	    <property name="prefix" value="${velocity.prefix}"/>
+	    <property name="suffix" value="${velocity.suffix}"/>
+	    <property name="viewClass" value="org.springframework.web.servlet.view.velocity.VelocityView" />
+	</bean>
+	
+	<!-- Exception -->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>	
+				<prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error/fileSizeLimitExceeded</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- Locale -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+	    <property name="defaultLocale" value="en" />		
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>org.eternity.resource.message</value>
+				<value>org.eternity.resource.config</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

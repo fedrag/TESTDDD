@@ -1,0 +1,16 @@
+<!DOCTYPE aspectj PUBLIC
+  "-//AspectJ//DTD//EN"    "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+
+<!--
+  CGLIB으로 생성된 오브젝트에 대해서는 weaving을 제거한다.
+   이 옵션은 어플리케이션 스타트 시 속도를 향상시킨다.
+-->
+<aspectj>
+  <weaver>
+    <include within="org.eternity..*"/>        
+    <exclude within="org.eternity..*CGLIB*"/>
+  </weaver>
+  <aspects>
+    <include within="org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect"/>
+  </aspects>
+</aspectj>

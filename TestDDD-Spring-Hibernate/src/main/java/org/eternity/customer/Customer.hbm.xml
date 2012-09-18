@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+ 
+<hibernate-mapping package="org.eternity.customer" default-access="field">
+	<class name="HybernateCustomer" table="CUSTOMERS">
+		<id name="id" column="ID" type="long">
+			<generator class="native"/>
+		</id>
+		<property name="customerNumber" column="CUSTOMER_NUMBER" type="string" length="20" not-null="true"/>
+		<property name="name" column="NAME" type="string" length="10" not-null="true"/>
+		<property name="address" column="ADDRESS" type="string" length="50" not-null="true"/>
+		<property name="mileage" column="MILEAGE" type="long"/>
+		<component name="limitPrice" class="Money">
+			<property name="amount" column="PRICE" type="big_decimal"/>
+		</component>
+	</class>
+</hibernate-mapping>
