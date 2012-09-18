@@ -2,7 +2,6 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="web-root-pom">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <property name="context-root" value="web-root-pom"/>
         <property name="java-output-path" value="/web-root-pom/build/classes"/>
     </wb-module>
