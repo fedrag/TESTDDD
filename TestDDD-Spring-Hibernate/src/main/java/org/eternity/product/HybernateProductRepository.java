@@ -15,7 +15,7 @@ public class HybernateProductRepository extends HibernateDaoSupport implements P
 	
 	@SuppressWarnings("unchecked")
 	public Product find(String name) {
-		List<Product> result = (List<Product>)getHibernateTemplate().find("from Product where name=?", name);
+		List<Product> result = (List<Product>)getHibernateTemplate().find("from Products where name=?", name);
 		if (result != null && result.size() > 0) {
 			return result.get(0);
 		}   

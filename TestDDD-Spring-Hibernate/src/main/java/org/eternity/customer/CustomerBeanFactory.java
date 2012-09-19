@@ -22,19 +22,25 @@ public class CustomerBeanFactory implements BeanFactory{
 
 	@Override
 	public Object createBean(){
+		Customer customer = null;
 		String customerNumber = (String)this.params.get("customerNumber");
     	String name = (String)this.params.get("name");        	
     	String address = (String)this.params.get("address");
     	Object limitPrice = this.params.get("limitPrice");
         if (this.repoType==REPO_TYPE_COLLECTION) {	
         	if(limitPrice!=null){
-        		return new CollectionCustomer(customerNumber, name, address, (Long)limitPrice);
+        		customer =  new CollectionCustomer(customerNumber, name, address, (Long)limitPrice);
         	}else{
-        		return new CollectionCustomer(customerNumber, name, address);
+        		customer =  new CollectionCustomer(customerNumber, name, address);
         	}
         } else{
-            return null;
+        	if(limitPrice!=null){
+        		customer =  new HybernateCustomer(customerNumber, name, address, (Long)limitPrice);
+        	}else{
+        		customer =  new HybernateCustomer(customerNumber, name, address);
+        	}
         }
+        return customer;
     }
 
 }

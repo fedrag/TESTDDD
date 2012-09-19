@@ -2,36 +2,68 @@ package org.eternity.customer;
 
 import static org.junit.Assert.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.persistence.TableGenerator;
+import javax.sql.DataSource;
 
 import org.eternity.common.BeanFactory;
 import org.eternity.common.DBManager;
 import org.eternity.common.Registrar;
 import org.eternity.common.RepositoryBeanFactory;
 import org.eternity.order.OrderRepository;
+import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
 
 public class CustomerTest extends AbstractTransactionalSpringContextTests {
+	private SessionFactory sessionFactory;
+	private Connection connection;
 	private Customer customer; 
 	private CustomerRepository customerRepository;
+	
+	private DataSource dataSource; 
+	
+	@Required
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+	
+	@Required
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 	
 	@Override
 	protected String[] getConfigLocations() {
 		return new String[] { "/spring/config/beans-web.xml" };
 	}
 	
-	
-	public void onSetUpBeforeTransaction() throws Exception {
+	@Override
+	protected void onSetUpBeforeTransaction() throws Exception {
 		//start db
-		DBManager.startHsqlDb();
+		DBManager.getInstance().startHsqlDb();
+	}
+	@Override
+	protected void onTearDownAfterTransaction(){
+		//shutdown db
+		DBManager.getInstance().stopHsqlDb();
 	}
 	
-	public void onSetUpInTransaction() throws Exception {
+	@Override
+	protected void onSetUpInTransaction() throws Exception {
+		connection = dataSource.getConnection();
+		connection.setAutoCommit(false);
+		DBManager.getInstance().createTables(connection);
+
 		((Registrar)applicationContext.getBean("registrar")).init();
 		
 	       RepositoryBeanFactory repositoryBeanFactory1 = (RepositoryBeanFactory)applicationContext.getBean("customerRepositoryBeanFactory");
@@ -44,6 +76,18 @@ public class CustomerTest extends AbstractTransactionalSpringContextTests {
 	       params.put("address", "경기도 안양시");
 	       customerBeanFactory.setParams(params);
 	       customer = (Customer)customerBeanFactory.createBean();
+	      
+	}
+	
+	protected void onTearDownInTransaction(){
+		try {
+			DBManager.getInstance().dropTables(connection);
+			connection.rollback();
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}        
 	}
 
 //	@Test
@@ -82,11 +126,6 @@ public class CustomerTest extends AbstractTransactionalSpringContextTests {
 	
 //	@Test
 //	public void testCustomerIdentical() {
-//		Customer customer =  new Customer("CUST-01", "홍길동", "경기도 안양시").persist();
-//		Customer anotherCustomer = Customer.find("CUST-01");
-//		assertSame(customer, anotherCustomer);           
-//	}
-	
 	@Test
 	public void testCustomerIdentical() {
 		customerRepository.save(customer);

@@ -22,13 +22,15 @@ public class OrderBeanFactory implements BeanFactory{
 
 	@Override
 	public Object createBean(){
+		Order order = null;
 		String orderId = (String)this.params.get("orderId");
     	Customer customer = (Customer)this.params.get("customer");
         if (this.repoType==REPO_TYPE_COLLECTION) {
-            return new CollectionOrder(orderId, customer);
+        	order =  new CollectionOrder(orderId, customer);
         } else{
-            return null;
+        	order =  new HybernateOrder(orderId, customer);
         }
+        return order;
     }
 
 }

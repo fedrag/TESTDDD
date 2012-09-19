@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 
 public class Money {
 	private final BigDecimal amount;
-
+	
+	public Money() {
+		this.amount = new BigDecimal(0);
+	}
 	public Money(BigDecimal amount) {
 		this.amount = amount;
 	}

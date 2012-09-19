@@ -16,7 +16,7 @@ public class HybernateOrderRepository extends HibernateDaoSupport implements Ord
 		 
 		@SuppressWarnings("unchecked")
 		public Order find(String orderId) {
-			List<Order> result = (List<Order>)getHibernateTemplate().find("from Order where orderId=?", orderId);
+			List<Order> result = (List<Order>)getHibernateTemplate().find("from Orders where orderId=?", orderId);
 			if (result != null && result.size() > 0) {
 				return result.get(0);
 			}
@@ -30,7 +30,7 @@ public class HybernateOrderRepository extends HibernateDaoSupport implements Ord
 		 
 		@SuppressWarnings("unchecked")
 			public Set<Order> findByCustomer(Customer customer) {
-			return new HashSet<Order>(getHibernateTemplate().find("from Order where customer=?", customer));
+			return new HashSet<Order>(getHibernateTemplate().find("from Orders where customers=?", customer));
 		}
 		 
 		public void save(Order order) {

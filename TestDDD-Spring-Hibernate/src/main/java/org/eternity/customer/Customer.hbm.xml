@@ -14,7 +14,7 @@
 		<property name="address" column="ADDRESS" type="string" length="50" not-null="true"/>
 		<property name="mileage" column="MILEAGE" type="long"/>
 		<component name="limitPrice" class="Money">
-			<property name="amount" column="PRICE" type="big_decimal"/>
+			<property name="amount" column="LIMIT_PRICE" type="big_decimal"/>
 		</component>
 	</class>
 </hibernate-mapping>

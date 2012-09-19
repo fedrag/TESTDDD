@@ -33,7 +33,7 @@ public class ProductRepositoryBeanFactory implements RepositoryBeanFactory{
 		ProductRepository productRepository = null;
         if (this.repoType==REPO_TYPE_COLLECTION) {
         	productRepository =  new CollectionProductRepository(this.registrar);
-        }else if (this.repoType==REPO_TYPE_HYBERNATE) {
+        }else{
         	productRepository =  new HybernateProductRepository(this.sessionFactory);
         } 
         return productRepository;

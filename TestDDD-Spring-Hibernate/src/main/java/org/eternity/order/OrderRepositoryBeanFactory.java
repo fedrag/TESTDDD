@@ -34,7 +34,7 @@ public class OrderRepositoryBeanFactory implements RepositoryBeanFactory{
 		OrderRepository orderRepository= null;
         if (this.repoType==REPO_TYPE_COLLECTION) {
         	orderRepository =  new CollectionOrderRepository(this.registrar);
-        }else if (this.repoType==REPO_TYPE_COLLECTION) {
+        }else{
         	orderRepository =  new HybernateOrderRepository(this.sessionFactory);
         }
         return orderRepository;

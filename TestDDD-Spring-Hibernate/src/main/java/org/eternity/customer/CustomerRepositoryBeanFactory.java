@@ -27,7 +27,7 @@ public class CustomerRepositoryBeanFactory implements RepositoryBeanFactory{
 		CustomerRepository customerRepository= null;
         if (this.repoType==REPO_TYPE_COLLECTION) {
         	customerRepository =  new CollectionCustomerRepository(this.registrar);
-        }else if (this.repoType==REPO_TYPE_COLLECTION) {
+        }else {
         	customerRepository =  new HybernateCustomerRepository(this.sessionFactory);
         }
         return customerRepository;

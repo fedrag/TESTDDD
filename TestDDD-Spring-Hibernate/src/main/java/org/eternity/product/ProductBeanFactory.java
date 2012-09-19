@@ -21,13 +21,15 @@ public class ProductBeanFactory implements BeanFactory{
 
 	@Override
 	public Object createBean(){
+		Product product = null;
 		String name = (String)this.params.get("name");
     	Money price = (Money)this.params.get("price");
         if (this.repoType==REPO_TYPE_COLLECTION) {
-            return new CollectionProduct(name, price);
+        	product =  new CollectionProduct(name, price);
         } else{
-            return null;
+        	product =  new HybernateProduct(name, price);
         }
+        return product;
     }
 
 }
