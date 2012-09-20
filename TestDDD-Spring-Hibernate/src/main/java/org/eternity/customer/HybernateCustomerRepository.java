@@ -15,8 +15,8 @@ public class HybernateCustomerRepository extends HibernateDaoSupport implements 
 	@SuppressWarnings("unchecked")
 	public Customer find(String customerNumber) {
 		try{
-			//List<Customer> result = (List<Customer>)getHibernateTemplate().find("from customers where customer_number=?", customerNumber);
-			List<Customer> result = (List<Customer>)getHibernateTemplate().find("from customers");
+			List<Customer> result = (List<Customer>)getHibernateTemplate().find("FROM HybernateCustomer where customer_number=?", customerNumber);
+			//List<Customer> result = (List<Customer>)getHibernateTemplate().find("select id,customer_number,name,address,mileage,limit_price  from customers");
 			if (result != null && result.size() > 0) {
 				return result.get(0);
 			}   

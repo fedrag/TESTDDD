@@ -17,6 +17,7 @@ import org.eternity.common.RepositoryBeanFactory;
 import org.eternity.order.OrderRepository;
 import org.hibernate.SessionFactory;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class CustomerTest extends AbstractTransactionalSpringContextTests {
 	@Override
 	protected void onSetUpInTransaction() throws Exception {
 		connection = dataSource.getConnection();
-		connection.setAutoCommit(false);
+//		connection.setAutoCommit(false);
 		DBManager.getInstance().createTables(connection);
 
 		((Registrar)applicationContext.getBean("registrar")).init();
@@ -82,8 +83,8 @@ public class CustomerTest extends AbstractTransactionalSpringContextTests {
 	protected void onTearDownInTransaction(){
 		try {
 			DBManager.getInstance().dropTables(connection);
-			connection.rollback();
-			connection.close();
+//			connection.rollback();
+//			connection.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
